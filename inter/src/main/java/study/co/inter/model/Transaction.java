@@ -28,5 +28,7 @@ public class Transaction {
     private Client client;
 
     private TransactionType type;
+
+    private double value;
     
 }
