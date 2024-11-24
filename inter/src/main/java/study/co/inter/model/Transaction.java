@@ -12,9 +12,9 @@ import lombok.Getter;
 import lombok.Setter;
 import study.co.inter.enums.TransactionType;
 
-@Entity
 @Getter
 @Setter
+@Entity
 public class Transaction {
     
     @Id
@@ -29,6 +29,6 @@ public class Transaction {
 
     private TransactionType type;
 
-    private double value;
+    private double amount;
     
 }

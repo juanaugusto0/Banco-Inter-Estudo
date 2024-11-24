@@ -22,7 +22,7 @@ public class TransactionService {
     private void saveTransaction(TransactionType type, double amount, Long clientId) {
         Transaction transaction = new Transaction();
         transaction.setType(type);
-        transaction.setValue(amount);
+        transaction.setAmount(amount);
         transaction.setClient(clientService.findClientById(clientId));
         transactionRepository.save(transaction);
     }
