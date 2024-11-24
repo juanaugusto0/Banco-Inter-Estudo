@@ -6,6 +6,10 @@ import org.springframework.stereotype.Service;
 
 import study.co.inter.dto.ClientDto;
 import study.co.inter.enums.MembershipTier;
+import study.co.inter.exception.ClientCpfNotFoundException;
+import study.co.inter.exception.ClientIdNotFoundException;
+import study.co.inter.exception.ForbiddenTransactionAccessException;
+import study.co.inter.exception.TransactionNotFoundException;
 import study.co.inter.model.Client;
 import study.co.inter.model.Transaction;
 import study.co.inter.repository.ClientRepository;
@@ -22,7 +26,7 @@ public class ClientService {
     public Client findClientById(Long clientId) {
         Client client = clientRepository.findById(clientId).orElse(null);
         if (client == null) {
-            throw new NullPointerException("Client not found");
+            throw new ClientIdNotFoundException(clientId);
         }
         return client;
     }
@@ -30,7 +34,7 @@ public class ClientService {
     public Client findClientByCpf(Long cpf) {
         Client client = clientRepository.findByCpf(cpf).orElse(null);
         if (client == null) {
-            throw new NullPointerException("Client not found");
+            throw new ClientCpfNotFoundException(cpf);
         }
         return client;
     }
@@ -71,10 +75,10 @@ public class ClientService {
         Client client = findClientByCpf(cpf);
         Transaction transaction = transactionRepository.findById(transactionId).orElse(null);
         if (transaction == null) {
-            throw new NullPointerException("Transaction not found");
+            throw new TransactionNotFoundException(transactionId);
         }
         if (!transaction.getClient().equals(client)) {
-            throw new IllegalArgumentException("Transaction does not belong to the client");
+            throw new ForbiddenTransactionAccessException(transactionId, client.getName());
         }
         return transaction;
     }
