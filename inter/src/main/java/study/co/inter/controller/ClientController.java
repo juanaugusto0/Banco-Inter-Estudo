@@ -23,7 +23,7 @@ public class ClientController {
 
     @GetMapping("/find/{id}")
     public Client findClientById(@PathVariable Long id) {
-        return clientService.findByClientId(id);
+        return clientService.findClientByCpf(id);
     }
 
     @PutMapping("/add")

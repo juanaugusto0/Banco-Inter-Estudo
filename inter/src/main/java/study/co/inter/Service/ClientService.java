@@ -19,7 +19,7 @@ public class ClientService {
     @Autowired
     private TransactionRepository transactionRepository;
 
-    public Client findByClientId(Long clientId) {
+    public Client findClientById(Long clientId) {
         Client client = clientRepository.findById(clientId).orElse(null);
         if (client == null) {
             throw new NullPointerException("Client not found");
@@ -27,7 +27,7 @@ public class ClientService {
         return client;
     }
 
-    public Client findByClientCpf(Long cpf) {
+    public Client findClientByCpf(Long cpf) {
         Client client = clientRepository.findByCpf(cpf).orElse(null);
         if (client == null) {
             throw new NullPointerException("Client not found");
@@ -46,7 +46,7 @@ public class ClientService {
     }
 
     public String updateClient(Long clientId, String email, MembershipTier membershipTier, String name, Long cpf) {
-        Client client = findByClientCpf(cpf);
+        Client client = findClientByCpf(cpf);
         if (email != null) client.setEmail(email);
         if (membershipTier != null) client.setMembershipTier(membershipTier);
         if (name != null) client.setName(name);
@@ -57,18 +57,18 @@ public class ClientService {
     }
 
     public String removeClient(Long cpf){
-        Client client = findByClientCpf(cpf);
+        Client client = findClientByCpf(cpf);
         clientRepository.delete(client);
         return client.getName() + " removed successfully";
     }
 
     public double getBalance(Long cpf){
-        Client client = findByClientCpf(cpf);
+        Client client = findClientByCpf(cpf);
         return client.getBalance();
     }
 
     public Transaction getTransactionById(Long transactionId, Long cpf) {
-        Client client = findByClientCpf(cpf);
+        Client client = findClientByCpf(cpf);
         Transaction transaction = transactionRepository.findById(transactionId).orElse(null);
         if (transaction == null) {
             throw new NullPointerException("Transaction not found");
