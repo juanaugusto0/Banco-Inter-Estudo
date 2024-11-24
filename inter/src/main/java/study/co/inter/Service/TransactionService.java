@@ -23,12 +23,12 @@ public class TransactionService {
     @Autowired
     private TransactionRepository transactionRepository;
 
-    private void saveTransaction(TransactionType type, double amount, Long clientId) {
+    private void saveTransaction(TransactionType type, double amount, Long clientCpf) {
         Transaction transaction = new Transaction();
         transaction.setTimestamp(LocalDateTime.now());
         transaction.setType(type);
         transaction.setAmount(amount);
-        transaction.setClient(clientService.findClientById(clientId));
+        transaction.setClient(clientService.findClientByCpf(clientCpf));
         transactionRepository.save(transaction);
     }
 
@@ -45,11 +45,11 @@ public class TransactionService {
     }
 
     
-    public String deposit(Long clientId, double depositAmount) {
+    public String deposit(Long clientCpf, double depositAmount) {
         if (depositAmount <= 0) {
             throw new InvalidValueException(depositAmount);
         }
-        Client client = clientService.findClientById(clientId);
+        Client client = clientService.findClientByCpf(clientCpf);
         client.setBalance(client.getBalance() + depositAmount);
         ClientDto clientDto = new ClientDto(
             client.getName(),
@@ -58,13 +58,13 @@ public class TransactionService {
             client.getCpf()
         );
         clientService.updateClient(clientDto);
-        saveTransaction(TransactionType.DEPOSIT, depositAmount, clientId);
+        saveTransaction(TransactionType.DEPOSIT, depositAmount, clientCpf);
         return "Deposit of $"+depositAmount+" made successfully";
     }
 
-    public String withdraw(Long clientId, double withdrawalAmount) {
-        validateWithdrawal(clientId, withdrawalAmount);
-        Client client = clientService.findClientById(clientId);
+    public String withdraw(Long clientCpf, double withdrawalAmount) {
+        validateWithdrawal(clientCpf, withdrawalAmount);
+        Client client = clientService.findClientByCpf(clientCpf);
         client.setBalance(client.getBalance() - withdrawalAmount);
         ClientDto clientDto = new ClientDto(
             client.getName(),
@@ -73,24 +73,24 @@ public class TransactionService {
             client.getCpf()
         );
         clientService.updateClient(clientDto);
-        saveTransaction(TransactionType.WITHDRAWAL, withdrawalAmount, clientId);
+        saveTransaction(TransactionType.WITHDRAWAL, withdrawalAmount, clientCpf);
         return "Withdrawal of $"+withdrawalAmount+" made successfully";
     }
 
-    private void validateWithdrawal(Long clientId, double withdrawalAmount) {
+    private void validateWithdrawal(Long clientCpf, double withdrawalAmount) {
         if (withdrawalAmount <= 0) {
             throw new InvalidValueException(withdrawalAmount);
         }
-        Client client = clientService.findClientById(clientId);
+        Client client = clientService.findClientByCpf(clientCpf);
         if (client.getBalance() < withdrawalAmount) {
             throw new InsufficientFundsException(client.getBalance(), withdrawalAmount);
         }
     }
 
 
-    public String transfer(Long senderId, Long recipientId, double amount) {
-        Client sender = clientService.findClientById(senderId);
-        Client recipient = clientService.findClientById(recipientId);
+    public String transfer(Long senderCpf, Long recipientCpf, double amount) {
+        Client sender = clientService.findClientByCpf(senderCpf);
+        Client recipient = clientService.findClientByCpf(recipientCpf);
 
         validateTransfer(sender, amount);
 
@@ -102,8 +102,8 @@ public class TransactionService {
         clientService.updateClient(senderDto);
         clientService.updateClient(recipientDto);
 
-        saveTransaction(TransactionType.TRANSFER, amount, senderId);
-        saveTransaction(TransactionType.TRANSFER, amount, recipientId);
+        saveTransaction(TransactionType.TRANSFER, amount, senderCpf);
+        saveTransaction(TransactionType.TRANSFER, amount, recipientCpf);
 
         return "Transfer of $"+amount+" made successfully to "+recipient.getName();
     }

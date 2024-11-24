@@ -24,8 +24,8 @@ public class ClientController {
     }
 
     @GetMapping("/id/{id}")
-    public Client findClientById(@PathVariable Long id) {
-        return clientService.findClientById(id);
+    public String seeClientAccount(@PathVariable Long id) {
+        return clientService.seeClientAccount(id);
     }
 
     @GetMapping("/balance/{cpf}")

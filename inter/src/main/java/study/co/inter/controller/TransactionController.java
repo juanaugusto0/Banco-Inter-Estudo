@@ -1,6 +1,6 @@
 package study.co.inter.controller;
 
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,9 +17,19 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
 
-    @PostMapping("/deposit")
-    public String deposit (@RequestParam Long clientId, @RequestParam double depositAmount) {
-        return transactionService.deposit(clientId, depositAmount);
+    @PutMapping("/deposit")
+    public String deposit (@RequestParam Long clientCpf, @RequestParam double depositAmount) {
+        return transactionService.deposit(clientCpf, depositAmount);
+    }
+
+    @PutMapping("/withdraw")
+    public String withdraw (@RequestParam Long clientCpf, @RequestParam double withdrawalAmount) {
+        return transactionService.withdraw(clientCpf, withdrawalAmount);
+    }
+
+    @PutMapping("/transfer")
+    public String transfer (@RequestParam Long senderCpf, @RequestParam Long recipientCpf, @RequestParam double amount) {
+        return transactionService.transfer(senderCpf, recipientCpf, amount);
     }
 
 }

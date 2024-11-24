@@ -2,7 +2,6 @@ package study.co.inter.model;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,8 +16,9 @@ import study.co.inter.enums.MembershipTier;
 @Getter
 @Setter
 public class Client {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @NonNull
@@ -42,7 +42,6 @@ public class Client {
         transactions = new HashSet<>();
     }
 
-    
     @Override
     public String toString() {
         return "Client{" +
@@ -50,13 +49,10 @@ public class Client {
                 ", email='" + email + '\'' +
                 ", membershipTier=" + membershipTier +
                 ", name='" + name + '\'' +
-                ", transactions=" + transactions +
+                ", transactions=" + transactions.toString() +
                 ", balance=" + balance +
                 ", cpf=" + cpf +
                 '}';
     }
 
-    
 }
-
-

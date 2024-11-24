@@ -18,7 +18,7 @@ import study.co.inter.enums.TransactionType;
 public class Transaction {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     private LocalDateTime timestamp;
@@ -30,7 +30,6 @@ public class Transaction {
     private TransactionType type;
 
     private double amount;
-    
     
     public String toString() {
         return "Transaction{" +

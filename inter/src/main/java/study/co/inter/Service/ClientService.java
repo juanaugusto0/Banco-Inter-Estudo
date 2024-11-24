@@ -22,12 +22,12 @@ public class ClientService {
     @Autowired
     private TransactionRepository transactionRepository;
 
-    public Client findClientById(Long clientId) {
+    public String seeClientAccount(Long clientId) {
         Client client = clientRepository.findById(clientId).orElse(null);
         if (client == null) {
             throw new ClientIdNotFoundException(clientId);
         }
-        return client;
+        return client.toString();
     }
 
     public Client findClientByCpf(Long cpf) {
@@ -53,7 +53,7 @@ public class ClientService {
         if (clientDto.getEmail() != null) client.setEmail(clientDto.getEmail());
         if (clientDto.getMembershipTier() != null) client.setMembershipTier(clientDto.getMembershipTier());
         if (clientDto.getName() != null) client.setName(clientDto.getName());
-        if (clientDto.getCpf() != null) client.setCpf(clientDto.getCpf());
+
         clientRepository.save(client);
         return client.getName() + " updated successfully\n"+client.toString();
 
