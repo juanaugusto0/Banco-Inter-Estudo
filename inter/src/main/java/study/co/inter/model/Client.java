@@ -43,6 +43,20 @@ public class Client {
     }
 
     
+    @Override
+    public String toString() {
+        return "Client{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", membershipTier=" + membershipTier +
+                ", name='" + name + '\'' +
+                ", transactions=" + transactions +
+                ", balance=" + balance +
+                ", cpf=" + cpf +
+                '}';
+    }
+
+    
 }
 
 

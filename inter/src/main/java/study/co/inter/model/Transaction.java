@@ -31,4 +31,14 @@ public class Transaction {
 
     private double amount;
     
+    
+    public String toString() {
+        return "Transaction{" +
+                "id=" + id +
+                ", timestamp=" + timestamp +
+                ", client=" + client.getName() +
+                ", type=" + type +
+                ", amount=" + amount +
+                '}';
+    }
 }

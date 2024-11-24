@@ -1,8 +1,11 @@
 package study.co.inter.Service;
 
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import study.co.inter.dto.ClientDto;
 import study.co.inter.enums.TransactionType;
 import study.co.inter.exception.AccountTierLimitException;
 import study.co.inter.exception.InsufficientFundsException;
@@ -14,6 +17,7 @@ import study.co.inter.repository.TransactionRepository;
 @Service
 public class TransactionService {
 
+    @Autowired
     private ClientService clientService;
     
     @Autowired
@@ -21,6 +25,7 @@ public class TransactionService {
 
     private void saveTransaction(TransactionType type, double amount, Long clientId) {
         Transaction transaction = new Transaction();
+        transaction.setTimestamp(LocalDateTime.now());
         transaction.setType(type);
         transaction.setAmount(amount);
         transaction.setClient(clientService.findClientById(clientId));
@@ -40,30 +45,48 @@ public class TransactionService {
     }
 
     
-    public String deposit(Long clientId, double amount) {
-        if (amount <= 0) {
-            throw new InvalidValueException(amount);
+    public String deposit(Long clientId, double depositAmount) {
+        if (depositAmount <= 0) {
+            throw new InvalidValueException(depositAmount);
         }
         Client client = clientService.findClientById(clientId);
-        client.setBalance(client.getBalance() + amount);
-        clientService.updateClient(client.getId(), client.getEmail(), client.getMembershipTier(), client.getName(), client.getCpf());
-        saveTransaction(TransactionType.DEPOSIT, amount, clientId);
-        return "Deposit made successfully";
+        client.setBalance(client.getBalance() + depositAmount);
+        ClientDto clientDto = new ClientDto(
+            client.getName(),
+            client.getMembershipTier(),
+            client.getEmail(),
+            client.getCpf()
+        );
+        clientService.updateClient(clientDto);
+        saveTransaction(TransactionType.DEPOSIT, depositAmount, clientId);
+        return "Deposit of $"+depositAmount+" made successfully";
     }
 
-    public String withdrawal(Long clientId, double amount) {
-        if (amount <= 0) {
-            throw new InvalidValueException(amount);
+    public String withdraw(Long clientId, double withdrawalAmount) {
+        validateWithdrawal(clientId, withdrawalAmount);
+        Client client = clientService.findClientById(clientId);
+        client.setBalance(client.getBalance() - withdrawalAmount);
+        ClientDto clientDto = new ClientDto(
+            client.getName(),
+            client.getMembershipTier(),
+            client.getEmail(),
+            client.getCpf()
+        );
+        clientService.updateClient(clientDto);
+        saveTransaction(TransactionType.WITHDRAWAL, withdrawalAmount, clientId);
+        return "Withdrawal of $"+withdrawalAmount+" made successfully";
+    }
+
+    private void validateWithdrawal(Long clientId, double withdrawalAmount) {
+        if (withdrawalAmount <= 0) {
+            throw new InvalidValueException(withdrawalAmount);
         }
         Client client = clientService.findClientById(clientId);
-        if (client.getBalance() < amount) {
-            throw new InsufficientFundsException(client.getBalance(), amount);
+        if (client.getBalance() < withdrawalAmount) {
+            throw new InsufficientFundsException(client.getBalance(), withdrawalAmount);
         }
-        client.setBalance(client.getBalance() - amount);
-        clientService.updateClient(client.getId(), client.getEmail(), client.getMembershipTier(), client.getName(), client.getCpf());
-        saveTransaction(TransactionType.WITHDRAWAL, amount, clientId);
-        return "Withdrawal made successfully";
     }
+
 
     public String transfer(Long senderId, Long recipientId, double amount) {
         Client sender = clientService.findClientById(senderId);
@@ -73,14 +96,16 @@ public class TransactionService {
 
         sender.setBalance(sender.getBalance() - amount);
         recipient.setBalance(recipient.getBalance() + amount);
-
-        clientService.updateClient(senderId, sender.getEmail(), sender.getMembershipTier(), sender.getName(), sender.getCpf());
-        clientService.updateClient(recipientId, recipient.getEmail(), recipient.getMembershipTier(), recipient.getName(), recipient.getCpf());
+        
+        ClientDto senderDto = new ClientDto(sender.getName(), sender.getMembershipTier(), sender.getEmail(), sender.getCpf());
+        ClientDto recipientDto = new ClientDto(recipient.getName(), recipient.getMembershipTier(), recipient.getEmail(), recipient.getCpf());
+        clientService.updateClient(senderDto);
+        clientService.updateClient(recipientDto);
 
         saveTransaction(TransactionType.TRANSFER, amount, senderId);
         saveTransaction(TransactionType.TRANSFER, amount, recipientId);
 
-        return "Transfer made successfully";
+        return "Transfer of $"+amount+" made successfully to "+recipient.getName();
     }
 
 }

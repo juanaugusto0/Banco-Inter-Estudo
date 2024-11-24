@@ -11,5 +11,12 @@ public class ClientDto {
     private MembershipTier membershipTier;
     private String email;
     private Long cpf;
+
+    public ClientDto(String name, MembershipTier membershipTier, String email, Long cpf) {
+        this.name = name;
+        this.membershipTier = membershipTier;
+        this.email = email;
+        this.cpf = cpf;
+    }
     
 }

@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import study.co.inter.dto.ClientDto;
-import study.co.inter.enums.MembershipTier;
 import study.co.inter.exception.ClientCpfNotFoundException;
 import study.co.inter.exception.ClientIdNotFoundException;
 import study.co.inter.exception.ForbiddenTransactionAccessException;
@@ -49,14 +48,14 @@ public class ClientService {
         return client.getName() + " added successfully";
     }
 
-    public String updateClient(Long clientId, String email, MembershipTier membershipTier, String name, Long cpf) {
-        Client client = findClientByCpf(cpf);
-        if (email != null) client.setEmail(email);
-        if (membershipTier != null) client.setMembershipTier(membershipTier);
-        if (name != null) client.setName(name);
-        if (cpf != null) client.setCpf(cpf);
+    public String updateClient(ClientDto clientDto){
+        Client client = findClientByCpf(clientDto.getCpf());
+        if (clientDto.getEmail() != null) client.setEmail(clientDto.getEmail());
+        if (clientDto.getMembershipTier() != null) client.setMembershipTier(clientDto.getMembershipTier());
+        if (clientDto.getName() != null) client.setName(clientDto.getName());
+        if (clientDto.getCpf() != null) client.setCpf(clientDto.getCpf());
         clientRepository.save(client);
-        return client.getName() + " updated successfully";
+        return client.getName() + " updated successfully\n"+client.toString();
 
     }
 
@@ -66,9 +65,9 @@ public class ClientService {
         return client.getName() + " removed successfully";
     }
 
-    public double getBalance(Long cpf){
+    public String getBalance(Long cpf){
         Client client = findClientByCpf(cpf);
-        return client.getBalance();
+        return "$"+client.getBalance();
     }
 
     public Transaction getTransactionById(Long transactionId, Long cpf) {
