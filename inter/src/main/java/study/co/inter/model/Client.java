@@ -1,7 +1,10 @@
 package study.co.inter.model;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -33,7 +36,8 @@ public class Client {
     @OneToMany(mappedBy = "client")
     private Set<Transaction> transactions;
 
-    private double balance;
+    @Column(nullable = false, precision = 19, scale = 2)
+    private BigDecimal balance;
 
     @NonNull
     private Long cpf;

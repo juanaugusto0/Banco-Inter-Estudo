@@ -1,6 +1,8 @@
 package study.co.inter.Service;
 
 
+import java.math.BigDecimal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +42,8 @@ public class ClientService {
 
     public String addClient(ClientDto clientDto) {
         Client client = new Client();
+        BigDecimal balance = new BigDecimal(0);
+        client.setBalance(balance);
         client.setEmail(clientDto.getEmail());
         client.setMembershipTier(clientDto.getMembershipTier());
         client.setName(clientDto.getName());
