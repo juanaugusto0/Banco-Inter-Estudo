@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import study.co.inter.Service.ClientService;
 import study.co.inter.dto.ClientDto;
 import study.co.inter.model.Client;
+import study.co.inter.model.Transaction;
 
 @RestController
 @RequestMapping("/client")
@@ -40,7 +41,7 @@ public class ClientController {
     }
 
     @GetMapping("/transaction")
-    public String getTransactionById(@RequestParam Long transactionId, @RequestParam Long cpf) {
+    public Transaction getTransactionById(@RequestParam Long transactionId, @RequestParam Long cpf) {
         return clientService.getTransactionById(transactionId, cpf);
     }
 

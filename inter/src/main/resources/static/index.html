@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banco Simples</title>
+    <style>
+        /* CSS básico para estilização */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            display: none;
+            /* Escondido até login */
+        }
+
+        main {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-container,
+        .account-container {
+            display: none;
+            /* Mostra apenas uma por vez */
+        }
+
+        .login-container.active,
+        .account-container.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Cabeçalho com informações da conta -->
+    <header id="account-header">
+        <h1 id="account-name"></h1>
+        <h2 id="account-balance"></h2>
+    </header>
+
+    <!-- Corpo principal -->
+    <main>
+        <!-- Tela de login -->
+        <div class="login-container active" id="login-screen">
+            <h2>Login</h2>
+            <p>Digite seu CPF para acessar:</p>
+            <input type="text" id="cpf-input" placeholder="Digite seu CPF" />
+            <button onclick="login()">Entrar</button>
+            <p id="login-error" style="color: red; display: none;">CPF inválido. Tente novamente.</p>
+        </div>
+
+        <!-- Tela de opções da conta -->
+        <div class="account-container" id="account-screen">
+            <div class="section">
+                <button onclick="showAccountDetails()">Ver mais detalhes da conta</button>
+                <button onclick="goToTransactions()">Abrir tela de transações</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Rodapé -->
+    <footer>
+        Criado por [Juan Augusto]
+    </footer>
+
+    <script>
+        const backendURL = "http://localhost:8080/client";
+        function login() {
+            const cpf = document.getElementById('cpf-input').value;
+
+            // Valida o CPF no backend
+            fetch(`${backendURL}/cpf/${cpf}`)
+                .then(response => {
+                    if (!response.ok) throw new Error("CPF inválido.");
+                    return response.json();
+                })
+                .then(data => {
+                    // Atualiza o cabeçalho e mostra a tela da conta
+                    document.getElementById('account-name').innerText = `Bem-vindo, ${data.name}`;
+                    document.getElementById('account-balance').innerText = `Saldo: R$ ${data.balance}`;
+                    document.getElementById('login-screen').classList.remove('active');
+                    document.getElementById('account-screen').classList.add('active');
+                    document.getElementById('account-header').style.display = 'block';
+                })
+                .catch(err => {
+                    document.getElementById('login-error').style.display = 'block';
+                });
+        }
+
+        function showAccountDetails() {
+            const cpf = document.getElementById('cpf-input').value;
+
+            // Obtém detalhes da conta (usando o endpoint de saldo como exemplo)
+            fetch(`${backendURL}/cpf/${cpf}`)
+                .then(response => response.json())
+                .then(data => {
+                    alert(`Detalhes da Conta:\n` +
+                        `Nome: ${data.name}\n` +
+                        `CPF: ${data.cpf}\n` +
+                        `E-mail: ${data.email}\n` +
+                        `ID: ${data.id}\n` +
+                        `Tipo de Membro: ${data.membershipTier}\n` +
+                        `Saldo: R$ ${data.balance}`);
+                })
+                .catch(err => {
+                    alert("Erro ao buscar detalhes da conta.");
+                });
+        }
+
+        function goToTransactions() {
+            alert("Função de transações ainda será implementada!");
+        }
+
+    </script>
+</body>
+
+</html>
