@@ -74,7 +74,7 @@ public class ClientService {
         return "$"+client.getBalance();
     }
 
-    public Transaction getTransactionById(Long transactionId, Long cpf) {
+    public String getTransactionById(Long transactionId, Long cpf) {
         Client client = findClientByCpf(cpf);
         Transaction transaction = transactionRepository.findById(transactionId).orElse(null);
         if (transaction == null) {
@@ -83,7 +83,7 @@ public class ClientService {
         if (!transaction.getClient().equals(client)) {
             throw new ForbiddenTransactionAccessException(transactionId, client.getName());
         }
-        return transaction;
+        return transaction.toString();
     }
     
 }
