@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Banco Simples</title>
     <style>
-        /* CSS básico para estilização */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -22,7 +21,6 @@
             padding: 15px;
             text-align: center;
             display: none;
-            /* Escondido até login */
         }
 
         main {
@@ -36,7 +34,6 @@
         .login-container,
         .account-container {
             display: none;
-            /* Mostra apenas uma por vez */
         }
 
         .login-container.active,
@@ -73,15 +70,12 @@
 </head>
 
 <body>
-    <!-- Cabeçalho com informações da conta -->
     <header id="account-header">
         <h1 id="account-name"></h1>
         <h2 id="account-balance"></h2>
     </header>
 
-    <!-- Corpo principal -->
     <main>
-        <!-- Tela de login -->
         <div class="login-container active" id="login-screen">
             <h2>Login</h2>
             <p>Digite seu CPF para acessar:</p>
@@ -90,7 +84,6 @@
             <p id="login-error" style="color: red; display: none;">CPF inválido. Tente novamente.</p>
         </div>
 
-        <!-- Tela de opções da conta -->
         <div class="account-container" id="account-screen">
             <div class="section">
                 <button onclick="showAccountDetails()">Ver mais detalhes da conta</button>
@@ -99,7 +92,6 @@
         </div>
     </main>
 
-    <!-- Rodapé -->
     <footer>
         Criado por [Juan Augusto]
     </footer>
@@ -109,14 +101,12 @@
         function login() {
             const cpf = document.getElementById('cpf-input').value;
 
-            // Valida o CPF no backend
             fetch(`${backendURL}/cpf/${cpf}`)
                 .then(response => {
                     if (!response.ok) throw new Error("CPF inválido.");
                     return response.json();
                 })
                 .then(data => {
-                    // Atualiza o cabeçalho e mostra a tela da conta
                     document.getElementById('account-name').innerText = `Bem-vindo, ${data.name}`;
                     document.getElementById('account-balance').innerText = `Saldo: R$ ${data.balance}`;
                     document.getElementById('login-screen').classList.remove('active');
@@ -131,7 +121,6 @@
         function showAccountDetails() {
             const cpf = document.getElementById('cpf-input').value;
 
-            // Obtém detalhes da conta (usando o endpoint de saldo como exemplo)
             fetch(`${backendURL}/cpf/${cpf}`)
                 .then(response => response.json())
                 .then(data => {
