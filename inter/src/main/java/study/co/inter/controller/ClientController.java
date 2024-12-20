@@ -1,5 +1,7 @@
 package study.co.inter.controller;
 
+import java.util.Set;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,6 +45,11 @@ public class ClientController {
     @GetMapping("/transaction")
     public Transaction getTransactionById(@RequestParam Long transactionId, @RequestParam Long cpf) {
         return clientService.getTransactionById(transactionId, cpf);
+    }
+
+    @GetMapping("/transactions/{cpf}")
+    public Set<Transaction> getTransactions(@PathVariable Long cpf) {
+        return clientService.getTransactions(cpf);
     }
 
     @PostMapping("/add")
