@@ -13,6 +13,7 @@ function login() {
             document.getElementById('login-screen').classList.remove('active');
             document.getElementById('account-screen').classList.add('active');
             document.getElementById('account-header').style.display = 'block';
+            localStorage.setItem('cpf', cpf);
         })
         .catch(err => {
             document.getElementById('login-error').style.display = 'block';
