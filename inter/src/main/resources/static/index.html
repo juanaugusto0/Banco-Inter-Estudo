@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Banco Simples</title>
-    <link rel="stylesheet" href="style.css?v=1.0">
+    <link rel="stylesheet" href="style.css?v=1.1">
     <script src="script.js?v=1.0"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
@@ -33,6 +33,21 @@
             <div class="section">
                 <button onclick="showAccountDetails()">Ver mais detalhes da conta</button>
                 <button onclick="goToTransactions()">Abrir tela de transações</button>
+            </div>
+        </div>
+        <div class="account-details-container" id="account-details-screen">
+            <h2 class="account-details-title" id="account-details-title">Detalhes da Conta</h2>
+            <div class="account-details">
+                <p><strong>Nome:</strong> <span id="account-details-name"></span></p>
+                <p><strong>Id:</strong> <span id="account-details-id"></span></p>
+                <p><strong>CPF:</strong> <span id="account-details-cpf"></span></p>
+                <p><strong>E-mail:</strong> <span id="account-details-email"></span></p>
+                <p><strong>Status de membro:</strong> <span id="account-details-membership-tier"></span></p>
+                <p><strong>Saldo:</strong> <span id="account-details-balance"></span></p>
+                <div class="button-container" id="button-container">
+                  <button>Alterar Dados</button>
+                  <button>Excluir Conta</button>
+                </div>
             </div>
         </div>
     </main>

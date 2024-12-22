@@ -104,22 +104,32 @@ function createAccount() {
 
 function showAccountDetails() {
     const cpf = document.getElementById('cpf-input').value;
-
-    fetch(`${backendURL}/cpf/${cpf}`)
-        .then(response => response.json())
-        .then(data => {
-            alert(`Detalhes da Conta:\n` +
-                `Nome: ${data.name}\n` +
-                `CPF: ${data.cpf}\n` +
-                `E-mail: ${data.email}\n` +
-                `ID: ${data.id}\n` +
-                `Tipo de Membro: ${data.membershipTier}\n` +
-                `Saldo: R$ ${data.balance}`);
-        })
-        .catch(err => {
-            alert("Erro ao buscar detalhes da conta.");
-        });
+    fetch(`${backendURL}/cpf/${cpf}`).then(response => {
+        if (!response.ok) {
+            return response.json().then(err => {
+                throw new Error(err.message);
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        document.getElementById('account-details-screen').classList.add('active');
+        document.getElementById('account-details-name').innerHTML = `${data.name}`;
+        document.getElementById('account-details-cpf').innerHTML = `${data.cpf}`;
+        document.getElementById('account-details-email').innerHTML = `${data.email}`;
+        document.getElementById('account-details-balance').innerHTML = `R$ ${data.balance}`;
+        document.getElementById('account-details-membership-tier').innerHTML = `${data.membershipTier}`;
+        document.getElementById('account-details-id').innerHTML = `${data.id}`;
+    })
 }
+
+document.addEventListener('click', (event) => {
+    const accountDetailsContainer = document.getElementById('account-details-screen');
+    if (accountDetailsContainer.classList.contains('active') && !accountDetailsContainer.contains(event.target)) {
+        accountDetailsContainer.classList.remove('active');
+    }
+});
+
 
 function goToTransactions() {
     window.location.href = 'transactions.html';

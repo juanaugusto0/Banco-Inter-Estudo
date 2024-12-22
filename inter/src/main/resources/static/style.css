@@ -1,12 +1,24 @@
+html, body {
+    margin: 0; /* Remove margens padrão */
+    padding: 0; /* Remove padding padrão */
+    width: 100%; /* Garante que ocupe toda a largura */
+    height: 100%; /* Garante que ocupe toda a altura */
+    overflow-x: hidden; /* Remove a barra de rolagem horizontal */
+    box-sizing: border-box; /* Inclui bordas e paddings no tamanho total */
+  }
+  
+  * {
+    box-sizing: inherit; /* Garante que todos os elementos usem o mesmo modelo */
+  }
+
 body {
     font-family: 'Roboto', sans-serif;
     background-color: #f4f4f9;
     color: #333;
-    margin: 0;
-    padding: 0;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    align-items: center;
 }
 
 header {
@@ -15,16 +27,29 @@ header {
     padding: 15px;
     text-align: center;
     display: none;
+    width: 100vw;
 }
 
 main {
     flex-grow: 1;
+    padding: 0;
+    margin: 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     background-color: #4682B4;
+    width: 100vw;
 }
+
+h2 {
+    display: block; /* O elemento é um bloco */
+    font-size: 1.5em; /* 1.5 vezes o tamanho da fonte padrão */
+    margin-block-start: 0.83em; /* Margem acima */
+    margin-block-end: 0.83em; /* Margem abaixo */
+    font-weight: bold; /* Texto em negrito */
+    line-height: 1.2; /* Altura da linha */
+  }
 
 .login-container,
 .account-container {
@@ -90,4 +115,34 @@ button:active {
     flex-direction: column;
     align-items: center;
     margin: 20px;
+}
+
+.account-details-container.active {
+    position: fixed;
+    width: 300px;
+    padding: 20px;
+    background-color: white;
+    border: 2px solid black;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    text-align: left;
+    z-index: 1010;
+    margin: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+}
+
+.account-details-container {
+    display: none;
+}
+
+.account-details-container.active .account-details-title {
+    text-align: center;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
 }
