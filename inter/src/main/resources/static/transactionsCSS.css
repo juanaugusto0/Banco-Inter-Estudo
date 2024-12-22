@@ -7,6 +7,22 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    padding-bottom: 70px;
+}
+
+main {
+    padding-top: 48px;
+}
+
+header {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
 }
 
 .transaction-actions {
@@ -55,7 +71,6 @@ img:hover {
 .image-container {
     margin-right: 70%;
 }
-
 .container {
     background: #fff;
     padding: 20px;
@@ -63,7 +78,10 @@ img:hover {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     width: 80%;
     max-width: 600px;
+    overflow-y: auto;
+    max-height: calc(100vh - 70px);
 }
+
 
 h1 {
     text-align: center;
@@ -91,20 +109,19 @@ h1 {
 .transaction-item .type {
     font-weight: bold;
     text-transform: uppercase;
-    color: #4CAF50;
-    width: 100px; /* Adjust the width as needed */
-    text-align: left; /* Ensure text is aligned to the left */
+    width: 100px;
+    text-align: left; 
 }
 
-.transaction-item .type.TRANSFER {
+.transaction-item .type.TRANSFERENCIA {
     color: #FF9800;
 }
 
-.transaction-item .type.DEPOSIT {
+.transaction-item .type.DEPOSITO {
     color: #2196F3;
 }
 
-.transaction-item .type.WITHDRAWAL {
+.transaction-item .type.SAQUE {
     color: #E91E63;
 }
 

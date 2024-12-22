@@ -3,6 +3,6 @@ package study.co.inter.exception;
 public class InsufficientFundsException extends RuntimeException{
     
     public InsufficientFundsException(double currentBalance, double value) {
-        super("Insufficient funds for this transaction. Current balance is $" + currentBalance + " and the value requested is $" + value + ".");
+        super("Fundos insuficientes para esta transação. O saldo atual é R$" + currentBalance + " e o valor solicitado é R$" + value + ".");
     }
 }

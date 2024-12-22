@@ -8,9 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import study.co.inter.dto.ClientDto;
+import study.co.inter.exception.ClientAlreadyExistsException;
 import study.co.inter.exception.ClientCpfNotFoundException;
 import study.co.inter.exception.ClientIdNotFoundException;
+import study.co.inter.exception.EmailAlreadyTakenException;
 import study.co.inter.exception.ForbiddenTransactionAccessException;
+import study.co.inter.exception.NullDataException;
 import study.co.inter.exception.TransactionNotFoundException;
 import study.co.inter.model.Client;
 import study.co.inter.model.Transaction;
@@ -38,11 +41,15 @@ public class ClientService {
         if (client == null) {
             throw new ClientCpfNotFoundException(cpf);
         }
+        if (client.getCpf() == null || client.getCpf() <= 0) {
+            throw new NullDataException();
+        }
         return client;
     }
 
     public String addClient(ClientDto clientDto) {
         Client client = new Client();
+        validateNewClient(clientDto);
         BigDecimal balance = new BigDecimal(0);
         client.setBalance(balance);
         client.setEmail(clientDto.getEmail());
@@ -50,7 +57,7 @@ public class ClientService {
         client.setName(clientDto.getName());
         client.setCpf(clientDto.getCpf());
         clientRepository.save(client);
-        return client.getName() + " added successfully";
+        return client.getName() + " adicionado(a) com sucesso";
     }
 
     public String updateClient(ClientDto clientDto){
@@ -59,15 +66,17 @@ public class ClientService {
         if (clientDto.getMembershipTier() != null) client.setMembershipTier(clientDto.getMembershipTier());
         if (clientDto.getName() != null) client.setName(clientDto.getName());
 
+        validateUpdate(client);
+
         clientRepository.save(client);
-        return client.getName() + " updated successfully\n"+client.toString();
+        return client.getName() + " atualizado(a) com sucesso\n"+client.toString();
 
     }
 
     public String removeClient(Long cpf){
         Client client = findClientByCpf(cpf);
         clientRepository.delete(client);
-        return client.getName() + " removed successfully";
+        return client.getName() + " removido(a) com sucesso";
     }
 
     public String getBalance(Long cpf){
@@ -90,6 +99,39 @@ public class ClientService {
     public Set<Transaction> getTransactions(Long cpf) {
         Client client = findClientByCpf(cpf);
         return client.getTransactions();
+    }
+
+    public void validateNewClient (ClientDto clientDto){
+        if (clientDto.getCpf() == null || clientDto.getCpf() <= 0) {
+            throw new NullDataException();
+        }
+        if (clientDto.getEmail() == null) {
+            throw new NullDataException();
+        }
+        if (clientDto.getMembershipTier() == null) {
+            throw new NullDataException();
+        }
+        if (clientDto.getName() == null) {
+            throw new NullDataException();
+        }
+        for (Client client : clientRepository.findAll()) {
+            if (client.getCpf().equals(clientDto.getCpf())) {
+                throw new ClientAlreadyExistsException(clientDto.getCpf());
+            }
+        }
+        for (Client client : clientRepository.findAll()) {
+            if (client.getEmail().equals(clientDto.getEmail())) {
+                throw new EmailAlreadyTakenException(clientDto.getEmail());
+            }
+        }
+    }
+
+    public void validateUpdate(Client client) {
+        for (Client c : clientRepository.findAll()) {
+            if (client.getEmail().equals(c.getEmail()) && !client.equals(c)) {
+                throw new EmailAlreadyTakenException(client.getEmail());
+            }
+        }
     }
     
 }

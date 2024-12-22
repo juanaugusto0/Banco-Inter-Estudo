@@ -5,22 +5,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transações</title>
-    <link rel="stylesheet" href="transactionsCSS.css">
-    <script src="transactionsJS.js"></script>
+    <link rel="stylesheet" href="transactionsCSS.css?v=1.0">
+    <script src="transactionsJS.js?v=1.1"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 </head>
 
 <body>
+    <header class="transaction-actions">
+        <div class="image-container">
+            <img src="transferir.png" alt="Botão de voltar" onclick="goToAccount()" />
+        </div>
+        <button onclick="showDeposit()">Depositar</button>
+        <button onclick="showWithdraw()">Sacar</button>
+        <button onclick="showTransfer()">Transferir</button>
+    </header>
     <main>
-        <header class="transaction-actions">
-            <div class="image-container">
-                <img src="transferir.png" alt="Botão de voltar" onclick="goToAccount()" />
-            </div>
-            <button onclick="showDeposit()">Depositar</button>
-            <button onclick="showWithdraw()">Sacar</button>
-            <button onclick="showTransfer()">Transferir</button>
-        </header>
         <div id="transactionList" class="transaction-list">
         </div>
     </main>

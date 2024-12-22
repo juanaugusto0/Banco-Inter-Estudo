@@ -11,6 +11,7 @@ import study.co.inter.enums.TransactionType;
 import study.co.inter.exception.AccountTierLimitException;
 import study.co.inter.exception.InsufficientFundsException;
 import study.co.inter.exception.InvalidValueException;
+import study.co.inter.exception.TransferToItselfException;
 import study.co.inter.model.Client;
 import study.co.inter.model.Transaction;
 import study.co.inter.repository.TransactionRepository;
@@ -24,6 +25,13 @@ public class TransactionService {
     @Autowired
     private TransactionRepository transactionRepository;
 
+    public int convertBigDecimalToInt(BigDecimal value) {
+        if (value == null) {
+            throw new IllegalArgumentException("Value cannot be null");
+        }
+        return value.intValue();
+    }
+
     private void saveTransaction(TransactionType type, BigDecimal amount, Long clientCpf) {
         Transaction transaction = new Transaction();
         transaction.setTimestamp(LocalDateTime.now());
@@ -33,7 +41,7 @@ public class TransactionService {
         transactionRepository.save(transaction);
     }
 
-    private void validateTransfer(Client sender, BigDecimal amount) {
+    private void validateTransfer(Client sender, Long recipient, BigDecimal amount) {
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new InvalidValueException(amount.doubleValue());
         }
@@ -43,12 +51,14 @@ public class TransactionService {
         if (amount.compareTo(BigDecimal.valueOf(sender.getMembershipTier().getLimit())) > 0) {
             throw new AccountTierLimitException(sender.getMembershipTier(), sender.getName());
         }
+        if (sender.getCpf().equals(recipient)) {
+            throw new TransferToItselfException();
+        }
     }
 
     public String deposit(Long clientCpf, BigDecimal depositAmount) {
-        if (depositAmount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new InvalidValueException(depositAmount.doubleValue());
-        }
+        validateDeposit(depositAmount);
+        
         Client client = clientService.findClientByCpf(clientCpf);
         client.setBalance(client.getBalance().add(depositAmount));
         ClientDto clientDto = new ClientDto(
@@ -58,8 +68,18 @@ public class TransactionService {
             client.getCpf()
         );
         clientService.updateClient(clientDto);
-        saveTransaction(TransactionType.DEPOSIT, depositAmount, clientCpf);
-        return "Deposit of $" + depositAmount + " made successfully";
+        saveTransaction(TransactionType.DEPOSITO, depositAmount, clientCpf);
+        return "Depósito de R$" + depositAmount + " feito com sucesso";
+    }
+
+    public void validateDeposit(BigDecimal depositAmount) {
+        if (depositAmount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new InvalidValueException(depositAmount.doubleValue());
+        }
+        int depositIntAmount = convertBigDecimalToInt(depositAmount);
+        if (depositIntAmount % 5 != 0 && depositIntAmount % 2 != 0) {
+            throw new InvalidValueException(depositAmount.doubleValue());
+        }
     }
 
     public String withdraw(Long clientCpf, BigDecimal withdrawalAmount) {
@@ -73,8 +93,8 @@ public class TransactionService {
             client.getCpf()
         );
         clientService.updateClient(clientDto);
-        saveTransaction(TransactionType.WITHDRAWAL, withdrawalAmount, clientCpf);
-        return "Withdrawal of $" + withdrawalAmount + " made successfully";
+        saveTransaction(TransactionType.SAQUE, withdrawalAmount, clientCpf);
+        return "Saque de R$" + withdrawalAmount + " feito com sucesso";
     }
 
     private void validateWithdrawal(Long clientCpf, BigDecimal withdrawalAmount) {
@@ -85,13 +105,17 @@ public class TransactionService {
         if (client.getBalance().compareTo(withdrawalAmount) < 0) {
             throw new InsufficientFundsException(client.getBalance().doubleValue(), withdrawalAmount.doubleValue());
         }
+        int withdrawalIntAmount = convertBigDecimalToInt(withdrawalAmount);
+        if (withdrawalIntAmount % 5 != 0 && withdrawalIntAmount % 2 != 0) {
+            throw new InvalidValueException(withdrawalAmount.doubleValue());
+        }
     }
 
     public String transfer(Long senderCpf, Long recipientCpf, BigDecimal amount) {
         Client sender = clientService.findClientByCpf(senderCpf);
         Client recipient = clientService.findClientByCpf(recipientCpf);
 
-        validateTransfer(sender, amount);
+        validateTransfer(sender, recipientCpf, amount);
 
         sender.setBalance(sender.getBalance().subtract(amount));
         recipient.setBalance(recipient.getBalance().add(amount));
@@ -101,10 +125,10 @@ public class TransactionService {
         clientService.updateClient(senderDto);
         clientService.updateClient(recipientDto);
 
-        saveTransaction(TransactionType.TRANSFER, amount, senderCpf);
-        saveTransaction(TransactionType.TRANSFER, amount, recipientCpf);
+        saveTransaction(TransactionType.TRANSFERENCIA, amount, senderCpf);
+        saveTransaction(TransactionType.TRANSFERENCIA, amount, recipientCpf);
 
-        return "Transfer of $" + amount + " made successfully to " + recipient.getName();
+        return "Transferência de R$" + amount + " feita com sucesso para " + recipient.getName();
     }
 
 }

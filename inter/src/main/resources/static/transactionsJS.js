@@ -26,12 +26,27 @@ function renderTransactions(transactions) {
     });
 }
 
+function updateTransactionList() {
+    fetch(`${backendURL}/client/transactions/${cpf}`)
+        .then(response => response.json())
+        .then(data => {
+            // Ordena os dados por timestamp (mais recente primeiro)
+            transactions = data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            // Limpa a lista atual
+            const transactionList = document.getElementById("transactionList");
+            transactionList.innerHTML = '';
+            // Renderiza novamente
+            renderTransactions(transactions);
+        })
+        .catch(error => console.error('Erro ao atualizar as transações:', error));
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     fetch(`${backendURL}/client/transactions/${cpf}`)
     .then(response => response.json())
     .then(data => {
         transactions = data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-        renderTransactions(transactions);
+        updateTransactionList(transactions);
     })
     .catch(error => console.error('Erro ao carregar as transações:', error));
 });
@@ -91,6 +106,7 @@ function showDeposit() {
             })
                 .then((data) => {
                     Swal.fire('Sucesso!', data, 'success');
+                    updateTransactionList();
                 })
                 .catch((error) => {
                     Swal.fire('Erro!', error.message, 'error');
@@ -108,6 +124,7 @@ function showWithdraw() {
         showCancelButton: true,
         confirmButtonText: 'Confirmar',
         cancelButtonText: 'Cancelar',
+
     }).then((result) => {
         if (result.isConfirmed) {
             const withdrawalAmount = parseFloat(result.value);
@@ -118,6 +135,57 @@ function showWithdraw() {
             })
                 .then((data) => {
                     Swal.fire('Sucesso!', data, 'success');
+                    updateTransactionList();
+                })
+                .catch((error) => {
+                    Swal.fire('Erro!', error.message, 'error');
+                });
+        }
+    });
+}
+
+function showTransfer() {
+    Swal.fire({
+        title: 'Nova Transferência',
+        html: `
+            <input type="text" id="recipient-cpf" class="swal2-input" placeholder="CPF do destinatário">
+            <input type="number" id="transfer-amount" class="swal2-input" placeholder="Valor para transferência" step="0.01" min="0.1">
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar',
+        didOpen: () => {
+            const cpfInput = document.getElementById('recipient-cpf');
+            cpfInput.addEventListener('input', () => {
+                let value = cpfInput.value.replace(/\D/g, '');
+                if (value.length > 11) value = value.slice(0, 11);
+                cpfInput.value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+            });
+        },
+        preConfirm: () => {
+            const recipientCpf = document.getElementById('recipient-cpf').value;
+            const amount = document.getElementById('transfer-amount').value;
+            if (!recipientCpf || !amount) {
+                Swal.showValidationMessage('Por favor, preencha ambos os campos');
+            }
+            return {
+                recipientCpf: document.getElementById('recipient-cpf').value.replace(/\D/g, ''),
+                amount: parseFloat(document.getElementById('transfer-amount').value),
+                senderCpf: cpf,
+            };
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const { recipientCpf, amount, senderCpf } = result.value;
+
+            makePutRequest(`${backendURL}/transaction/transfer`, {
+                recipientCpf: recipientCpf,
+                amount: amount,
+                senderCpf: senderCpf,
+            })
+                .then((data) => {
+                    Swal.fire('Sucesso!', data, 'success');
+                    updateTransactionList();
                 })
                 .catch((error) => {
                     Swal.fire('Erro!', error.message, 'error');
