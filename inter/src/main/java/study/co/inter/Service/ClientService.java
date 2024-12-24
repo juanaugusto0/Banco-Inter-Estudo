@@ -10,31 +10,17 @@ import org.springframework.stereotype.Service;
 import study.co.inter.dto.ClientDto;
 import study.co.inter.exception.ClientAlreadyExistsException;
 import study.co.inter.exception.ClientCpfNotFoundException;
-import study.co.inter.exception.ClientIdNotFoundException;
 import study.co.inter.exception.EmailAlreadyTakenException;
-import study.co.inter.exception.ForbiddenTransactionAccessException;
 import study.co.inter.exception.NullDataException;
-import study.co.inter.exception.TransactionNotFoundException;
 import study.co.inter.model.Client;
 import study.co.inter.model.Transaction;
 import study.co.inter.repository.ClientRepository;
-import study.co.inter.repository.TransactionRepository;
 
 @Service
 public class ClientService {
     
     @Autowired
     private ClientRepository clientRepository;
-    @Autowired
-    private TransactionRepository transactionRepository;
-
-    public String seeClientAccount(Long clientId) {
-        Client client = clientRepository.findById(clientId).orElse(null);
-        if (client == null) {
-            throw new ClientIdNotFoundException(clientId);
-        }
-        return client.toString();
-    }
 
     public Client findClientByCpf(Long cpf) {
         Client client = clientRepository.findByCpf(cpf).orElse(null);
@@ -79,39 +65,13 @@ public class ClientService {
         return client.getName() + " removido(a) com sucesso";
     }
 
-    public String getBalance(Long cpf){
-        Client client = findClientByCpf(cpf);
-        return "$"+client.getBalance();
-    }
-
-    public Transaction getTransactionById(Long transactionId, Long cpf) {
-        Client client = findClientByCpf(cpf);
-        Transaction transaction = transactionRepository.findById(transactionId).orElse(null);
-        if (transaction == null) {
-            throw new TransactionNotFoundException(transactionId);
-        }
-        if (!transaction.getClient().equals(client)) {
-            throw new ForbiddenTransactionAccessException(transactionId, client.getName());
-        }
-        return transaction;
-    }
-
     public Set<Transaction> getTransactions(Long cpf) {
         Client client = findClientByCpf(cpf);
         return client.getTransactions();
     }
 
     public void validateNewClient (ClientDto clientDto){
-        if (clientDto.getCpf() == null || clientDto.getCpf() <= 0) {
-            throw new NullDataException();
-        }
-        if (clientDto.getEmail() == null) {
-            throw new NullDataException();
-        }
-        if (clientDto.getMembershipTier() == null) {
-            throw new NullDataException();
-        }
-        if (clientDto.getName() == null) {
+        if (clientDto.getCpf() == null || clientDto.getCpf() <= 0 || clientDto.getEmail() == null || clientDto.getName() == null || clientDto.getMembershipTier() == null) {
             throw new NullDataException();
         }
         for (Client client : clientRepository.findAll()) {

@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import study.co.inter.Service.ClientService;
@@ -27,24 +26,9 @@ public class ClientController {
         this.clientService = clientService;
     }
 
-    @GetMapping("/id/{id}")
-    public String seeClientAccount(@PathVariable Long id) {
-        return clientService.seeClientAccount(id);
-    }
-
-    @GetMapping("/balance/{cpf}")
-    public String getBalance(@PathVariable Long cpf) {
-        return clientService.getBalance(cpf);
-    }
-
     @GetMapping("/cpf/{cpf}")
     public Client findClientByCpf(@PathVariable Long cpf) {
         return clientService.findClientByCpf(cpf);
-    }
-
-    @GetMapping("/transaction")
-    public Transaction getTransactionById(@RequestParam Long transactionId, @RequestParam Long cpf) {
-        return clientService.getTransactionById(transactionId, cpf);
     }
 
     @GetMapping("/transactions/{cpf}")
