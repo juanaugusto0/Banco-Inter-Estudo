@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import study.co.inter.model.Client;
 
 public interface ClientRepository extends JpaRepository<Client, Long> {
-    Optional<Client> findByCpf(Long cpf);
+    Optional<Client> findByCpf(String cpf);
 }

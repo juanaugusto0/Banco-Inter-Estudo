@@ -10,9 +10,9 @@ public class ClientDto {
     private String name;
     private MembershipTier membershipTier;
     private String email;
-    private Long cpf;
+    private String cpf;
 
-    public ClientDto(String name, MembershipTier membershipTier, String email, Long cpf) {
+    public ClientDto(String name, MembershipTier membershipTier, String email, String cpf) {
         this.name = name;
         this.membershipTier = membershipTier;
         this.email = email;

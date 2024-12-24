@@ -27,12 +27,12 @@ public class ClientController {
     }
 
     @GetMapping("/cpf/{cpf}")
-    public Client findClientByCpf(@PathVariable Long cpf) {
+    public Client findClientByCpf(@PathVariable String cpf) {
         return clientService.findClientByCpf(cpf);
     }
 
     @GetMapping("/transactions/{cpf}")
-    public Set<Transaction> getTransactions(@PathVariable Long cpf) {
+    public Set<Transaction> getTransactions(@PathVariable String cpf) {
         return clientService.getTransactions(cpf);
     }
 
@@ -47,7 +47,7 @@ public class ClientController {
     };
 
     @DeleteMapping("/remove/{cpf}")
-    public String removeClient (@PathVariable Long cpf) {
+    public String removeClient (@PathVariable String cpf) {
         return clientService.removeClient(cpf);
     };
 

@@ -22,12 +22,12 @@ public class ClientService {
     @Autowired
     private ClientRepository clientRepository;
 
-    public Client findClientByCpf(Long cpf) {
+    public Client findClientByCpf(String cpf) {
         Client client = clientRepository.findByCpf(cpf).orElse(null);
         if (client == null) {
             throw new ClientCpfNotFoundException(cpf);
         }
-        if (client.getCpf() == null || client.getCpf() <= 0) {
+        if (client.getCpf() == null || Long.parseLong(client.getCpf()) <= 0) {
             throw new NullDataException();
         }
         return client;
@@ -59,19 +59,19 @@ public class ClientService {
 
     }
 
-    public String removeClient(Long cpf){
+    public String removeClient(String cpf){
         Client client = findClientByCpf(cpf);
         clientRepository.delete(client);
         return client.getName() + " removido(a) com sucesso";
     }
 
-    public Set<Transaction> getTransactions(Long cpf) {
+    public Set<Transaction> getTransactions(String cpf) {
         Client client = findClientByCpf(cpf);
         return client.getTransactions();
     }
 
     public void validateNewClient (ClientDto clientDto){
-        if (clientDto.getCpf() == null || clientDto.getCpf() <= 0 || clientDto.getEmail() == null || clientDto.getName() == null || clientDto.getMembershipTier() == null) {
+        if (clientDto.getCpf() == null || Long.parseLong(clientDto.getCpf()) <= 0 || clientDto.getEmail() == null || clientDto.getName() == null || clientDto.getMembershipTier() == null) {
             throw new NullDataException();
         }
         for (Client client : clientRepository.findAll()) {

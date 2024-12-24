@@ -20,19 +20,19 @@ public class TransactionController {
     }
 
     @PutMapping("/deposit")
-    public String deposit (@RequestParam Long clientCpf, @RequestParam String depositAmount) {
+    public String deposit (@RequestParam String clientCpf, @RequestParam String depositAmount) {
         BigDecimal depositAmountBigDecimal = new BigDecimal(depositAmount);
         return transactionService.deposit(clientCpf, depositAmountBigDecimal);
     }
 
     @PutMapping("/withdraw")
-    public String withdraw (@RequestParam Long clientCpf, @RequestParam String withdrawalAmount) {
+    public String withdraw (@RequestParam String clientCpf, @RequestParam String withdrawalAmount) {
         BigDecimal withdrawalAmountBigDecimal = new BigDecimal(withdrawalAmount);
         return transactionService.withdraw(clientCpf, withdrawalAmountBigDecimal);
     }
 
     @PutMapping("/transfer")
-    public String transfer (@RequestParam Long senderCpf, @RequestParam Long recipientCpf, @RequestParam String amount) {
+    public String transfer (@RequestParam String senderCpf, @RequestParam String recipientCpf, @RequestParam String amount) {
         BigDecimal amountBigDecimal = new BigDecimal(amount);
         return transactionService.transfer(senderCpf, recipientCpf, amountBigDecimal);
     }

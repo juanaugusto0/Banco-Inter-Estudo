@@ -93,6 +93,11 @@ function showDeposit() {
         input: 'number',
         inputLabel: 'Digite o valor para depósito',
         inputPlaceholder: 'Ex: 500.00',
+        inputAttributes: {
+            step: '0.01',
+            min: '0.1',
+            inputmode: 'decimal',
+        },
         showCancelButton: true,
         confirmButtonText: 'Confirmar',
         cancelButtonText: 'Cancelar',
@@ -121,6 +126,11 @@ function showWithdraw() {
         input: 'number',
         inputLabel: 'Digite o valor para saque',
         inputPlaceholder: 'Ex: 300.00',
+        inputAttributes: {
+            step: '0.01',
+            min: '0.1',
+            inputmode: 'decimal',
+        },
         showCancelButton: true,
         confirmButtonText: 'Confirmar',
         cancelButtonText: 'Cancelar',

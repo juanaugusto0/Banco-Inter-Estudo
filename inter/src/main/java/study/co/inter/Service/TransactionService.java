@@ -32,7 +32,7 @@ public class TransactionService {
         return value.intValue();
     }
 
-    private void saveTransaction(TransactionType type, BigDecimal amount, Long clientCpf) {
+    private void saveTransaction(TransactionType type, BigDecimal amount, String clientCpf) {
         Transaction transaction = new Transaction();
         transaction.setTimestamp(LocalDateTime.now());
         transaction.setType(type);
@@ -41,7 +41,7 @@ public class TransactionService {
         transactionRepository.save(transaction);
     }
 
-    private void validateTransfer(Client sender, Long recipient, BigDecimal amount) {
+    private void validateTransfer(Client sender, String recipient, BigDecimal amount) {
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new InvalidValueException(amount.doubleValue());
         }
@@ -56,7 +56,7 @@ public class TransactionService {
         }
     }
 
-    public String deposit(Long clientCpf, BigDecimal depositAmount) {
+    public String deposit(String clientCpf, BigDecimal depositAmount) {
         validateDeposit(depositAmount);
         
         Client client = clientService.findClientByCpf(clientCpf);
@@ -76,13 +76,9 @@ public class TransactionService {
         if (depositAmount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new InvalidValueException(depositAmount.doubleValue());
         }
-        int depositIntAmount = convertBigDecimalToInt(depositAmount);
-        if (depositIntAmount % 5 != 0 && depositIntAmount % 2 != 0) {
-            throw new InvalidValueException(depositAmount.doubleValue());
-        }
     }
 
-    public String withdraw(Long clientCpf, BigDecimal withdrawalAmount) {
+    public String withdraw(String clientCpf, BigDecimal withdrawalAmount) {
         validateWithdrawal(clientCpf, withdrawalAmount);
         Client client = clientService.findClientByCpf(clientCpf);
         client.setBalance(client.getBalance().subtract(withdrawalAmount));
@@ -97,7 +93,7 @@ public class TransactionService {
         return "Saque de R$" + withdrawalAmount + " feito com sucesso";
     }
 
-    private void validateWithdrawal(Long clientCpf, BigDecimal withdrawalAmount) {
+    private void validateWithdrawal(String clientCpf, BigDecimal withdrawalAmount) {
         if (withdrawalAmount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new InvalidValueException(withdrawalAmount.doubleValue());
         }
@@ -105,13 +101,9 @@ public class TransactionService {
         if (client.getBalance().compareTo(withdrawalAmount) < 0) {
             throw new InsufficientFundsException(client.getBalance().doubleValue(), withdrawalAmount.doubleValue());
         }
-        int withdrawalIntAmount = convertBigDecimalToInt(withdrawalAmount);
-        if (withdrawalIntAmount % 5 != 0 && withdrawalIntAmount % 2 != 0) {
-            throw new InvalidValueException(withdrawalAmount.doubleValue());
-        }
     }
 
-    public String transfer(Long senderCpf, Long recipientCpf, BigDecimal amount) {
+    public String transfer(String senderCpf, String recipientCpf, BigDecimal amount) {
         Client sender = clientService.findClientByCpf(senderCpf);
         Client recipient = clientService.findClientByCpf(recipientCpf);
 

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,14 +34,14 @@ public class Client {
     @NonNull
     private String name;
 
-    @OneToMany(mappedBy = "client")
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Transaction> transactions;
 
     @Column(nullable = false, precision = 19, scale = 2)
     private BigDecimal balance;
 
     @NonNull
-    private Long cpf;
+    private String cpf;
 
     public Client() {
         transactions = new HashSet<>();

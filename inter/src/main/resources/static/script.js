@@ -54,7 +54,7 @@ function createAccount() {
         html:
             '<input id="details-name" class="details-input" placeholder="Nome">' +
             '<input type="text" id="details-cpf" class="details-input" placeholder="CPF">' +
-            '<input id="details-email" class="details-input" placeholder="E-mail">' +
+            '<input type="email" id="details-email" class="details-input" placeholder="E-mail">' +
             '<select id="details-membership" class="details-input">' +
             '<option value="" disabled selected>Selecione o Tipo de Membro</option>' +
             '<option value="SILVER">SILVER</option>' +
@@ -82,6 +82,12 @@ function createAccount() {
 
             if (!name || !cpf || !email || !membershipTier) {
                 Swal.showValidationMessage('Por favor, preencha todos os campos');
+                return false;
+            }
+            
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email)) {
+                Swal.showValidationMessage('Por favor, insira um e-mail válido');
                 return false;
             }
 
