@@ -22,7 +22,7 @@ import study.co.inter.enums.TransactionType;
 public class Transaction {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private LocalDateTime timestamp;

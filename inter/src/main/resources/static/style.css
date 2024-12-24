@@ -119,7 +119,7 @@ button:active {
 
 .account-details-container.active {
     position: fixed;
-    width: 300px;
+    width: 30vw;
     padding: 20px;
     background-color: white;
     border: 2px solid black;
@@ -145,4 +145,8 @@ button:active {
 .button-container {
     display: flex;
     justify-content: center;
+}
+
+.account-details-btn {
+    margin: inherit 20px;
 }

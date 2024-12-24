@@ -69,7 +69,7 @@ public class ClientService {
         validateUpdate(client);
 
         clientRepository.save(client);
-        return client.getName() + " atualizado(a) com sucesso\n"+client.toString();
+        return client.getName() + " atualizado(a) com sucesso";
 
     }
 

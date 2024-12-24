@@ -5,10 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Banco Simples</title>
-    <link rel="stylesheet" href="style.css?v=1.1">
-    <script src="script.js?v=1.0"></script>
+    <link rel="stylesheet" href="style.css?v=1.0">
+    <script src="script.js?v=1.1"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    
 </head>
 
 <body>
@@ -21,7 +22,7 @@
         <div class="login-container active" id="login-screen">
             <h2>Login</h2>
             <p>Digite seu CPF para acessar:</p>
-            <input type="text" id="cpf-input" placeholder="Digite seu CPF" />
+            <input type="text" id="cpf-input" placeholder="Digite seu CPF"  />
             <div>
                 <button onclick="login()">Entrar</button>
                 <button onclick="createAccount()">Criar Conta</button>
@@ -45,8 +46,8 @@
                 <p><strong>Status de membro:</strong> <span id="account-details-membership-tier"></span></p>
                 <p><strong>Saldo:</strong> <span id="account-details-balance"></span></p>
                 <div class="button-container" id="button-container">
-                  <button>Alterar Dados</button>
-                  <button>Excluir Conta</button>
+                  <button class="account-details-btn" onclick="changeData()">Alterar Dados</button>
+                  <button class="account-details-btn" onclick="deleteAccount()">Excluir Conta</button>
                 </div>
             </div>
         </div>
@@ -55,6 +56,14 @@
     <footer>
         Criado por Juan Augusto
     </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('#cpf-input').mask('000.000.000-00');
+        });
+    </script>
 </body>
 
 </html>
